@@ -1,15 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 app = Flask(__name__)
 
-CLIENT_ID = "SPOTIFY_CLIENT_ID"
-CLIENT_SECRET ="SPOTIFY_CLIENT_SECRET"
+# 🔑 Replace these with your real credentials from Spotify Developer Dashboard
+CLIENT_ID = "your_actual_client_id_here"
+CLIENT_SECRET = "your_actual_client_secret_here"
+
+# Authentication
 auth_manager = SpotifyClientCredentials(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET
@@ -17,13 +16,18 @@ auth_manager = SpotifyClientCredentials(
 
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
+# Home page
 @app.route("/")
 def index():
     return render_template("index.html")
 
+# Search route
 @app.route("/search")
 def search():
     query = request.args.get("q")
+
+    if not query:
+        return jsonify([])
 
     results = sp.search(q=query, type="track", limit=10)
 
@@ -33,11 +37,12 @@ def search():
         tracks.append({
             "name": item["name"],
             "artist": item["artists"][0]["name"],
-            "image": item["album"]["images"][0]["url"],
+            "image": item["album"]["images"][0]["url"] if item["album"]["images"] else None,
             "preview": item["preview_url"]
         })
 
     return jsonify(tracks)
 
+# Run app
 if __name__ == "__main__":
     app.run(debug=True)
