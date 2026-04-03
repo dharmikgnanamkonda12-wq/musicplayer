@@ -8,8 +8,8 @@ load_dotenv()
 
 app = Flask(__name__)
 
-CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
-CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
+CLIENT_ID = "SPOTIFY_CLIENT_ID"
+CLIENT_SECRET ="SPOTIFY_CLIENT_SECRET"
 auth_manager = SpotifyClientCredentials(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET
